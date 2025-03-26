@@ -1,0 +1,106 @@
+﻿@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IJSRuntime jsRuntime
+
+
+@page "/publish"
+
+<PageTitle>Tatsunami</PageTitle>
+
+
+<MudThemeProvider />
+
+<MudLayout>
+    <MudAppBar Class="object-contain" Elevation="23">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Color="Color.Primary"  Typo="Typo.h5" Class="ml-3">Shion Tatsunami</MudText>
+        <MudImage Src="Media/shion_3_niko.png" Class=" hover:animate-spin" style="max-height: 64px;"></MudImage>
+        <MudSpacer></MudSpacer>
+        <MudImage  Class=" hover:scale-150 ease-out transition-all duration-150" style="max-height: 64px;" Src="Media/shion_12_ahaha.png"/>
+
+
+    </MudAppBar>
+
+    <MudMainContent>
+        @if (IsAdmin == true)
+        {
+            <MudCard Elevation="23">
+                <MudImage Class="m-auto mt-8" Style="max-height: 128px;" Src="Media/shion_21_hohoemi.png"></MudImage>
+                <MudText  Color="Color.Primary" Style="font-family: scary;" Class="m-auto text-center" Typo="Typo.h4">Hi me!</MudText>
+                
+
+            </MudCard>
+            <MudTextField Placeholder="Blog Name (Blogs use MarkDown)" Class="mr-8 w-64 justify-items-center" @bind-Value="Name" T="string" HelperText="Input blog name"></MudTextField>
+            <MudButton @onclick="PublishPost" Class="  hover:scale-110 ease-out transition-all duration-150">Publish</MudButton>
+            <MudTextField Lines="50" MaxLines="500" Placeholder="Blog Content" Style="width: 80%;" Class="m-auto justify-items-center" @bind-Value="Content" T="string" HelperText="Input blog content"></MudTextField>
+
+
+        }
+        else
+        {
+            <MudImage Class="m-auto mt-8" Style="max-height: 256px;" Src="Media/8_scene.png"></MudImage>
+            <MudText Style="font-family: scary;" Class="m-auto text-center" Typo="Typo.h6">You better log in... OR SHOULD I?</MudText>
+            <MudTextField  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" Placeholder="Username" Class="m-auto w-64" @bind-Value="Username" T="string" HelperText="Input Username!"></MudTextField>
+            <MudTextField  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Key"  InputType="@PasswordInput" Placeholder="Password" Class="m-auto w-64" @bind-Value="Password" T="string" HelperText="Input Password!"></MudTextField>
+            @if (WrongInfo == true)
+            {
+                <MudText Style="font-family: scary;" Class="m-auto text-center" Typo="Typo.h4">WRONG INFORMATION!</MudText>
+            }
+            else
+            {
+
+            }
+
+            <MudButton @onclick="LogIn" Class="place-content-center justify-items-center m-auto w-full hover:scale-110 ease-out transition-all duration-150">Log in</MudButton>
+        }
+        @*Body*@
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = false;
+    public bool IsAdmin { get; set; } = false;
+    public string Steam { get; set; } = "https://steamcommunity.com/id/AkumarinKukino/";
+    public string Username { get; set; } 
+    public string Password { get; set; }
+    public bool WrongInfo { get; set; } = false;
+    InputType PasswordInput = InputType.Password;
+    public string Name { get; set; }
+    public string Content { get; set; }
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+
+    public void LogIn()
+    {
+       
+        
+            if (Username == "YOUR USERNAME" && Password == "YOUR PASSWORD") //Replace with info
+            {
+                WrongInfo = false;
+                IsAdmin = true;
+             
+            }
+            else
+            {
+                WrongInfo = true;
+            }
+      
+
+    }
+
+    public void PublishPost()
+    {
+        if (Name != null && Content != null)
+        {
+            string FileN = DateTime.Now.ToString("yyyyMMddHHmmss") + Name;
+            File.WriteAllText("wwwroot/Articles/" + FileN + ".md", Content);
+
+            string url = "/";
+             jsRuntime.InvokeAsync<object>("open", url, "_self");
+           
+        }
+    }
+}
+

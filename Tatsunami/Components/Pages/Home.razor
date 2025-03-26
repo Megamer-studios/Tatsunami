@@ -1,0 +1,101 @@
+﻿@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IJSRuntime jsRuntime
+
+
+@page "/"
+
+<PageTitle>Tatsunami</PageTitle>
+
+
+<MudThemeProvider />
+
+<MudLayout>
+    <MudAppBar Class="object-contain" Elevation="23">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Color="Color.Primary"  Typo="Typo.h5" Class="ml-3">Shion Tatsunami</MudText>
+        <MudImage Src="Media/shion_3_niko.png" Class=" hover:animate-spin" style="max-height: 64px;"></MudImage>
+        <MudSpacer></MudSpacer>
+        <MudImage @onclick="() => {SetState(-1);}" Class=" hover:scale-150 ease-out transition-all duration-150" style="max-height: 64px;" Src="Media/shion_12_ahaha.png"/>
+
+
+    </MudAppBar>
+    <MudDrawer @onclick="() => {SetState(-1);}" @bind-Open="_drawerOpen" Color="Color.Primary" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <MudButton @onclick="() => {SetState(0);}" Size="Size.Large" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.QuestionMark" StartIcon="@Icons.Material.Filled.CoPresent">?Who am I?!?!</MudButton>
+        <MudButton @onclick="() => {SetState(1);}" Size="Size.Large" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.QuestionMark" StartIcon="@Icons.Material.Filled.PermIdentity">?AND WHAT DO I DO?!?!!</MudButton>
+        <MudButton @onclick="() => {SetState(2);}" Size="Size.Large" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.QuestionMark" StartIcon="@Icons.Material.Filled.PersonSearch">?Where / HOW can you find me :3 ? !</MudButton>
+        <MudButton @onclick="() => {SetState(3);}" Size="Size.Large" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.QuestionMark" StartIcon="@Icons.Material.Filled.Book">MY BLOG!</MudButton>
+        <MudButton @onclick="() => {SetState(-1);}" Size="Size.Large" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.QuestionMark" StartIcon="@Icons.Material.Filled.QuestionMark"></MudButton>
+        @*NavMenu*@
+    </MudDrawer>
+    <MudMainContent>
+        @if (State == 0)
+        {
+            <MudImage Class="m-auto mt-8 hover:scale-110 ease-out transition-all duration-150" Src="Media/Ebenin.png"></MudImage>
+        }
+        else if (State == 1)
+        {
+            <MudImage Class="m-auto mt-8 hover:scale-110 ease-out transition-all duration-150" Src="Media/Ebenin2.png"></MudImage>
+        }
+        else if (State == 2)
+        {
+            <MudImage Style="max-height: 512px;" Class="m-auto mt-8 hover:animate-spin ease-out transition-all duration-150" Src="Media/11_scene_1.png"></MudImage>
+            <MudText Style="font-family: scary;" Class="m-auto text-center hover:animate-bounce" Typo="Typo.h1">NO NEED TO SEARCH I'M ALWAYS WITH YOU :D</MudText>
+            <MudText @onclick="NavigateToSteam" Style="font-family: scary;" Color="Color.Warning" Class="cursor-pointer m-auto text-center hover:animate-pulse hover:scale-125" Typo="Typo.h3">Steam account</MudText>
+        }
+        else if (State == 3)
+        {
+            <MudText Style="font-family: scary;" Class="m-auto text-center " Typo="Typo.h3">MY BLOGS/ARTICLES!</MudText>
+            @foreach (var file in files)
+            {
+                string hopdey = Path.GetFileNameWithoutExtension(file);
+                string name = hopdey.Substring(14, hopdey.Length - 14);
+                string contt = File.ReadAllText(file);
+                <div style="height: 15px;"></div>
+                <MudCard class="bg-black" >
+                    <MudText Style="font-family: scary;" Class="m-auto text-center " Color="Color.Primary" Typo="Typo.h3">@name</MudText>
+                    <MudMarkdown  Value="@contt"></MudMarkdown>
+                </MudCard>
+                <div style="height: 15px;"></div>
+            }
+        }
+        else
+        {
+            <MudImage Class="m-auto mt-8" Src="Media/11_scene_1.png"></MudImage>
+            <MudText Style="font-family: scary;" Class="m-auto text-center" Typo="Typo.h1">I'M SORRY SENPAI BUT THERE'S NOTHING HERE.</MudText>
+        }
+        @*Body*@
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = false;
+    int State { get; set; } = 0;
+    public string Steam { get; set; } = "https://steamcommunity.com/id/AkumarinKukino/";
+    public string[] files { get; set; } = Directory.GetFiles(@"wwwroot/Articles");
+    protected override void OnInitialized()
+    {
+        Array.Reverse(files);
+        base.OnInitialized();
+    }
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    public void NavigateToSteam()  
+    {  
+       string url = "https://steamcommunity.com/id/AkumarinKukino/";  
+       jsRuntime.InvokeAsync<object>("open", url, "_blank");  
+    }
+    public async Task Reload()
+    {
+        string url = "/";
+        await jsRuntime.InvokeAsync<object>("open", url, "_self");
+    }
+
+    public void SetState(int state)
+    {
+        State = state;
+        _drawerOpen = false;
+    }
+}
+

@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+@Body
+@* Required *@
+<MudThemeProvider Theme="MyCustomTheme"/>
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+@code {
+    MudTheme MyCustomTheme = new MudTheme()
+    {
+            PaletteLight = new PaletteLight()
+            {
+                Primary = Colors.Red.Default,
+                Secondary = Colors.Shades.White,
+                AppbarBackground = Colors.Shades.Black,
+                 TextPrimary = Colors.Shades.White,
+                 Warning = Colors.Blue.Accent2,
+                 Dark = Colors.Shades.Black,
+            },
+          
+
+
+    };
+}
