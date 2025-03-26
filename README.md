@@ -16,7 +16,7 @@ Tatsunami is a Blazor-based web application built with MudBlazor. It serves as a
 ### Steps
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-repo/tatsunami.git
+   git clone https://github.com/Megamer-studios/Tatsunami
    cd tatsunami
    ```
 2. **Run the application:**
